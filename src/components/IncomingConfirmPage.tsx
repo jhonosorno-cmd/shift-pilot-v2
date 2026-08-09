@@ -24,7 +24,7 @@ export default function IncomingConfirmPage({ user, onConfirmed }: IncomingConfi
     handover: Handover;
     events: HandoverEvent[];
   } | null> => {
-    const areas = ['Línea 1', 'Línea 2', 'Sala Eléctrica', 'Utilities'];
+    const areas = ['Mezcla', 'Preparación', 'Envasado', 'Empaque', 'Utilidades'];
     const candidates: { handover: Handover; events: HandoverEvent[] }[] = [];
     for (const area of areas) {
       const result = await getPendingAcknowledgment(area, user.id);

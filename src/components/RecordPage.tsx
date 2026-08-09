@@ -110,7 +110,7 @@ export default function RecordPage() {
               operator_id: user.id,
               shift_time: new Date().toISOString(),
               journey: journey || 'mañana',
-              area: area || 'Línea 1',
+              area: area || 'Mezcla',
               status: 'processing',
               recording_url: filePath,
             })

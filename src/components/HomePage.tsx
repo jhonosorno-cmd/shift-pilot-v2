@@ -5,7 +5,7 @@ import { Profile, Handover, HandoverEvent } from '../lib/types';
 import { supabase, EF_URL } from '../lib/supabase';
 import { getLatestCompleteHandover, getOpenEventsForHandover, getShiftsOpen } from '../lib/shift-utils';
 
-const AREAS = ['Línea 1', 'Línea 2', 'Sala Eléctrica', 'Utilities'];
+const AREAS = ['Mezcla', 'Preparación', 'Envasado', 'Empaque', 'Utilidades'];
 const JOURNEYS = [
   { value: 'mañana', label: 'Mañana' },
   { value: 'tarde', label: 'Tarde' },
@@ -22,7 +22,7 @@ interface InheritedEventWithShifts extends HandoverEvent {
 
 export default function HomePage({ user }: HomePageProps) {
   const navigate = useNavigate();
-  const [area, setArea] = useState('Línea 1');
+  const [area, setArea] = useState(AREAS[0]);
   const [journey, setJourney] = useState<'mañana' | 'tarde' | 'noche'>('mañana');
   const [history, setHistory] = useState<Handover[]>([]);
   const [inheritedEvents, setInheritedEvents] = useState<InheritedEventWithShifts[]>([]);

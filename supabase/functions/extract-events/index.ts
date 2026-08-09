@@ -22,7 +22,7 @@ interface PhotoAnalysisRequest {
   event_context: string
   corrected_transcript: string
 }
-interface AssetRef { id: string; tag: string; nombre: string; area: string; base_criticality: string }
+interface AssetRef { id: string; tag: string; nombre: string; area: string; base_criticality: string; aliases?: string[] | null; asset_type?: string | null; parent_tag?: string | null }
 
 class InvalidApiKeyError extends Error {}
 class RateLimitedError extends Error {}
@@ -123,11 +123,21 @@ async function callFeatherless(
   }
   if (useJsonMode) payload.response_format = { type: "json_object" }
 
-  const response = await fetch(FEATHERLESS_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${FEATHERLESS_API_KEY}`, "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  })
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 60000)
+  let response: Response
+  try {
+    response = await fetch(FEATHERLESS_URL, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${FEATHERLESS_API_KEY}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    })
+  } catch (err) {
+    throw new ModelCallError(`timeout/network: ${err instanceof Error ? err.message : String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
+  }
 
   if (response.status === 401 || response.status === 403) throw new InvalidApiKeyError()
   if (response.status === 429) throw new RateLimitedError()
@@ -239,7 +249,12 @@ async function extractEventsFromTranscript(
 ): Promise<{
   events: Record<string, unknown>[]; disambiguation_questions: { question: string; options: string[] }[]; follow_up_questions: { question: string }[]
 }> {
-  const assetContext = assets.map((a) => `- ${a.tag} (${a.nombre}) - area: ${a.area} [base: ${a.base_criticality}]`).join("\n")
+const assetContext = assets.map((a) => {
+  const type = a.asset_type ? ` | tipo: ${a.asset_type}` : ""
+  const parent = a.parent_tag ? ` | pertenece a: ${a.parent_tag}` : ""
+  const alias = Array.isArray(a.aliases) && a.aliases.length > 0 ? ` | se le dice: ${a.aliases.join(", ")}` : ""
+  return `- ${a.tag} (${a.nombre}) - area: ${a.area} [base: ${a.base_criticality}]${type}${parent}${alias}`
+}).join("\n")
 
   const answeredLines: string[] = []
   const answeredDisambig = (prevDisambiguation ?? []).filter((q) => q.resolved)
@@ -274,7 +289,8 @@ async function extractEventsFromTranscript(
   try {
     parsed = await attempt("")
   } catch (firstErr) {
-    console.error("First attempt failed, retrying:", firstErr)
+    if (!(firstErr instanceof InvalidModelOutputError)) throw firstErr
+    console.error("First attempt returned invalid output, retrying:", firstErr)
     parsed = await attempt(
       "IMPORTANTE: responde SOLO con el JSON. Empieza con { y termina con }. Sin pensamiento, sin markdown."
     )
@@ -411,14 +427,14 @@ Deno.serve(async (req: Request) => {
     }
 
     let assets: AssetRef[] = await fetchSupabase<AssetRef[]>(
-      `/rest/v1/assets?area=eq.${encodeURIComponent(area)}&select=id,tag,nombre,area,base_criticality`
+      `/rest/v1/assets?area=eq.${encodeURIComponent(area)}&select=id,tag,nombre,area,base_criticality,aliases,asset_type,parent_tag`
     )
     if (!Array.isArray(assets)) assets = []
     let assetsAreaMatched = assets.length > 0
     if (assets.length === 0) {
       console.warn(`No assets matched area="${area}"`)
       const all = await fetchSupabase<AssetRef[]>(
-        `/rest/v1/assets?select=id,tag,nombre,area,base_criticality`
+        `/rest/v1/assets?select=id,tag,nombre,area,base_criticality,aliases,asset_type,parent_tag`
       )
       assets = Array.isArray(all) ? all : []
     }
