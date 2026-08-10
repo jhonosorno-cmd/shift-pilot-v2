@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Pilot — lablab.ai Hackathon Deck</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <style>
+    /* --- Shared Layout --- */
+    html, body, .reveal, .reveal * {
+      font-family: var(--r-main-font), 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+    }
+    .reveal h1, .reveal h2, .reveal h3,
+    .reveal .section-divider h2 {
+      font-family: var(--r-heading-font), 'Segoe UI', system-ui, sans-serif !important;
+    }
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2.5em;
+      align-items: start; text-align: left;
+    }
+    .three-col {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5em;
+      text-align: center;
+    }
+    .metric-row {
+      display: flex; justify-content: center; gap: 3em;
+      text-align: center; margin: 1.5em 0;
+    }
+    .metric-row > div { flex: 1; }
+    .metric {
+      font-size: 4em; font-weight: 800; line-height: 1.1; display: block;
+    }
+    .metric-label {
+      font-size: 0.45em; text-transform: uppercase; letter-spacing: 0.1em;
+      opacity: 0.7; margin-top: 0.4em; display: block; font-weight: 500;
+    }
+    .card {
+      border-radius: 16px; padding: 1.5em 1.8em; text-align: left;
+    }
+    .card h3 { margin: 0 0 0.4em 0; font-size: 1.1em; }
+    .card p { font-size: 0.95em; line-height: 1.5; margin: 0; }
+    .card i, .card svg {
+      width: 36px; height: 36px; stroke-width: 1.5; margin-bottom: 0.6em;
+    }
+    .icon-feature {
+      display: flex; align-items: flex-start; gap: 1em;
+      margin: 0.7em 0; text-align: left;
+    }
+    .icon-feature i, .icon-feature svg {
+      flex-shrink: 0; width: 32px; height: 32px; stroke-width: 1.5;
+      margin-top: 0.1em;
+    }
+    .icon-feature div strong { display: block; margin-bottom: 0.15em; }
+    .steps {
+      counter-reset: step; list-style: none !important; padding: 0 !important;
+    }
+    .steps li {
+      counter-increment: step; display: flex; align-items: flex-start;
+      gap: 1em; margin: 0.7em 0; padding: 0;
+    }
+    .steps li::before {
+      content: counter(step); display: flex; align-items: center;
+      justify-content: center; min-width: 2em; height: 2em;
+      border-radius: 50%; font-weight: 700; font-size: 0.9em; flex-shrink: 0;
+    }
+    .subtitle {
+      font-size: 1.2em; opacity: 0.7; font-weight: 400; margin-top: 0.3em;
+    }
+    .reveal section.section-divider {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; text-align: center;
+    }
+    .reveal section.section-divider h2 {
+      font-size: 3.5em; margin: 0;
+    }
+    .reveal section.section-divider h2::after { display: none; }
+
+    /* --- Theme: Shift Pilot — Dark Industrial Control Room --- */
+    :root {
+      --r-background-color: #0B1120;
+      --r-main-color: #F1F5F9;
+      --r-heading-color: #F1F5F9;
+      --r-link-color: #F59E0B;
+      --r-heading-font: 'Inter', sans-serif;
+      --r-main-font: 'Inter', sans-serif;
+      --r-heading-text-transform: none;
+      --r-heading-font-weight: 700;
+      --r-main-font-size: 20px;
+
+      --bg-page: #0B1120;
+      --bg-card: #131C2E;
+      --bg-elevated: #1A2744;
+      --bg-secondary: #1E293B;
+      --accent: #F59E0B;
+      --accent-deep: #D97706;
+      --text-primary: #F1F5F9;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --border: #1E3A5F;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --success: #22C55E;
+    }
+
+    .reveal {
+      background:
+        radial-gradient(ellipse at 85% -10%, rgba(245,158,11,0.08) 0%, transparent 55%),
+        radial-gradient(ellipse at 5% 110%, rgba(30,58,95,0.35) 0%, transparent 55%),
+        #0B1120;
+    }
+    .reveal .slides section {
+      text-align: left;
+      color: var(--text-primary);
+      padding: 0.2em 0.4em;
+    }
+    .reveal h1, .reveal h2, .reveal h3 { color: var(--text-primary); }
+    .reveal h1 { font-size: 3em; letter-spacing: -0.02em; font-weight: 800; }
+    .reveal h2 {
+      font-size: 1.9em;
+      margin-bottom: 0.45em;
+      letter-spacing: -0.01em;
+      font-weight: 800;
+    }
+    .reveal h2::after {
+      content: '';
+      display: block;
+      width: 48px;
+      height: 3px;
+      background: var(--accent);
+      margin-top: 0.35em;
+    }
+    .reveal h3 { font-weight: 700; }
+    .reveal p, .reveal li { color: var(--text-primary); }
+    .reveal .highlight { color: var(--accent); font-weight: 700; }
+    .reveal .danger { color: var(--danger); font-weight: 700; }
+    .reveal .success { color: var(--success); font-weight: 700; }
+    .reveal .muted { color: var(--text-secondary); }
+    .reveal .mono { font-family: 'JetBrains Mono', ui-monospace, monospace !important; font-size: 0.92em; }
+    .reveal .metric { color: var(--accent); font-size: 3.2em; }
+    .reveal .metric-label { color: var(--text-secondary); opacity: 1; }
+
+    .reveal .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+    }
+    .reveal .card h3 { color: var(--text-primary); }
+    .reveal .card i, .reveal .card svg { color: var(--accent); }
+    .reveal i, .reveal svg { color: var(--accent); }
+    .reveal .icon-feature i, .reveal .icon-feature svg { color: var(--accent); }
+    .reveal .icon-feature div strong { color: var(--text-primary); }
+    .reveal .icon-feature div { color: var(--text-secondary); font-size: 0.95em; line-height: 1.45; }
+    .reveal .steps li::before {
+      background: var(--accent);
+      color: #0B1120;
+    }
+    .reveal .controls button { color: rgba(241,245,249,0.5); }
+    .reveal .progress span { background: var(--accent); }
+
+    .reveal section.title-slide {
+      text-align: center;
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(245,158,11,0.10) 0%, transparent 60%),
+        linear-gradient(180deg, rgba(19,28,46,0.6) 0%, rgba(11,17,32,0) 100%);
+    }
+    .reveal section.title-slide h1::after,
+    .reveal section.center-slide h2::after { display: none; }
+    .reveal section.center-slide { text-align: center; }
+
+    /* --- Custom components: Shift Pilot deck --- */
+
+    /* HUD eyebrow (title slide) */
+    .hud {
+      display: inline-flex; align-items: center; gap: 0.6em;
+      font-size: 0.7em; font-weight: 600; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--text-secondary);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 0.45em 1.1em; margin-bottom: 1.4em;
+      background: rgba(19,28,46,0.7);
+    }
+    .hud .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--danger);
+      animation: hud-pulse 1.6s ease-in-out infinite;
+    }
+    @keyframes hud-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.25; } }
+
+    .badge-row {
+      display: flex; justify-content: center; gap: 0.8em; margin-top: 1.6em;
+      flex-wrap: wrap;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 0.45em;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); border-radius: 999px;
+      padding: 0.4em 1em; font-size: 0.78em; font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .chip i, .chip svg { width: 14px; height: 14px; color: var(--accent); }
+
+    /* Cost mini-cards (problem slide) */
+    .cost-card {
+      display: flex; align-items: flex-start; gap: 0.9em;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.75em 1em; margin: 0.55em 0;
+      font-size: 0.92em; line-height: 1.4;
+    }
+    .cost-card i, .cost-card svg { width: 22px; height: 22px; flex-shrink: 0; margin-top: 0.15em; }
+    .cost-card.danger i, .cost-card.danger svg { color: var(--danger); }
+    .cost-card.warn i, .cost-card.warn svg { color: var(--warning); }
+    .cost-card.mute i, .cost-card.mute svg { color: var(--text-muted); }
+
+    .callout {
+      margin-top: 1.1em; padding: 0.7em 1.1em;
+      border-left: 3px solid var(--danger);
+      background: rgba(239,68,68,0.07);
+      border-radius: 0 10px 10px 0;
+      font-size: 1.05em; font-weight: 600;
+    }
+
+    /* Solution chips (slide 4) */
+    .sol-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1em;
+      margin-top: 1.8em; text-align: center;
+    }
+    .sol-item {
+      display: flex; flex-direction: column; align-items: center; gap: 0.5em;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.1em 0.6em;
+    }
+    .sol-item i, .sol-item svg { width: 30px; height: 30px; }
+    .sol-item span { font-size: 0.8em; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.02em; }
+
+    /* Flow diagram (how it works) */
+    .flow { display: flex; align-items: flex-start; margin-top: 2.2em; }
+    .step {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 0.6em; position: relative;
+    }
+    .step:not(:last-child)::after {
+      content: ''; position: absolute; right: -6px; top: 22px;
+      width: 9px; height: 9px;
+      border-top: 2px solid var(--accent); border-right: 2px solid var(--accent);
+      transform: rotate(45deg);
+    }
+    .step-ico {
+      width: 46px; height: 46px; border-radius: 12px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step-ico i, .step-ico svg { width: 22px; height: 22px; color: var(--accent); }
+    .step span { font-size: 0.62em; color: var(--text-secondary); text-align: center; line-height: 1.25; font-weight: 600; }
+    .flow-note { text-align: center; margin-top: 1.6em; font-size: 0.95em; color: var(--text-secondary); }
+
+    /* Mock UI (disambiguation) */
+    .mock-ui {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .mock-head {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.6em 1em;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8em; font-weight: 700; letter-spacing: 0.04em;
+      background: var(--bg-secondary);
+    }
+    .mock-tag {
+      font-size: 0.68em; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--accent); border: 1px solid rgba(245,158,11,0.4);
+      border-radius: 999px; padding: 0.15em 0.7em;
+    }
+    .mock-body { padding: 0.9em 1em; }
+    .mock-quote {
+      font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+      font-size: 0.85em; color: var(--text-primary);
+      background: var(--bg-secondary); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.5em 0.8em; margin-bottom: 0.8em;
+    }
+    .mock-sub { font-size: 0.72em; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5em; }
+    .opt-row {
+      display: flex; align-items: center; gap: 0.7em;
+      border: 1px solid var(--border); border-radius: 10px;
+      background: var(--bg-elevated); padding: 0.55em 0.8em; margin: 0.45em 0;
+    }
+    .opt-row .dot {
+      width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid var(--accent); flex-shrink: 0;
+    }
+    .opt-tag {
+      font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+      font-weight: 700; font-size: 0.95em; color: var(--text-primary);
+      min-width: 4.2em;
+    }
+    .opt-name { font-size: 0.78em; color: var(--text-secondary); line-height: 1.3; }
+    .crit-badge {
+      margin-left: auto; flex-shrink: 0;
+      font-size: 0.58em; font-weight: 800; letter-spacing: 0.1em;
+      color: #FEE2E2; background: rgba(239,68,68,0.18);
+      border: 1px solid rgba(239,68,68,0.5);
+      border-radius: 6px; padding: 0.2em 0.55em;
+    }
+    .takeaway {
+      margin-top: 1.1em; text-align: center;
+      font-size: 1.5em; font-weight: 800; letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+    .takeaway::before, .takeaway::after { content: '— '; color: var(--accent); opacity: 0.6; }
+
+    /* Shift trail diagram (slide 7) */
+    .shift-track {
+      display: flex; align-items: center; justify-content: center; gap: 0.4em;
+      margin-top: 0.6em;
+    }
+    .shift-chip {
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); border-radius: 8px;
+      padding: 0.4em 0.9em; font-size: 0.72em; font-weight: 600;
+    }
+    .shift-chip.active {
+      border-color: var(--accent); color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(245,158,11,0.3);
+    }
+    .shift-arrow { color: var(--text-muted); font-size: 0.8em; }
+    .trail-bar {
+      margin-top: 0.9em;
+      background: var(--bg-elevated); border: 1px solid var(--accent);
+      border-radius: 10px; text-align: center;
+      padding: 0.6em 1em;
+      font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+      font-size: 0.85em; color: var(--accent);
+    }
+    .trail-cap {
+      margin-top: 0.6em; font-size: 0.78em; color: var(--text-secondary);
+      text-align: center; line-height: 1.4;
+    }
+    .handoff-card { border-color: rgba(245,158,11,0.35); }
+    .mock-btns { display: flex; gap: 0.6em; margin-top: 0.9em; }
+    .btn-mock {
+      flex: 1; text-align: center; font-size: 0.75em; font-weight: 700;
+      border-radius: 8px; padding: 0.55em 0.5em;
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.35em;
+    }
+    .btn-mock i, .btn-mock svg { width: 14px; height: 14px; }
+    .btn-mock.ok { background: var(--accent); color: #0B1120; }
+    .btn-mock.disabled { background: var(--bg-secondary); color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-mock.disabled i, .btn-mock.disabled svg { color: var(--text-muted); }
+
+    /* Dashboard chips (slide 8) */
+    .pdf-chip {
+      margin-top: 1.4em; text-align: center;
+      display: inline-flex; align-items: center; gap: 0.5em;
+      background: var(--bg-card); border: 1px solid var(--border);
+      color: var(--text-secondary); border-radius: 999px;
+      padding: 0.5em 1.3em; font-size: 0.8em; font-weight: 600;
+    }
+    .pdf-chip i, .pdf-chip svg { width: 16px; height: 16px; color: var(--accent); }
+
+    /* Architecture (slide 10) */
+    .arch-row { display: flex; align-items: stretch; justify-content: center; gap: 0.7em; margin-top: 0.8em; }
+    .arch-row.sub { margin-top: 1em; }
+    .arch-box {
+      flex: 1; text-align: center;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 0.8em 0.6em;
+      display: flex; flex-direction: column; justify-content: center; gap: 0.25em;
+    }
+    .arch-box strong { font-size: 0.85em; color: var(--text-primary); }
+    .arch-box span { font-size: 0.68em; color: var(--text-secondary); line-height: 1.3; }
+    .arch-box.highlight { border-color: rgba(245,158,11,0.45); background: var(--bg-elevated); }
+    .arch-box.highlight strong { color: var(--accent); }
+    .arch-box.wide { flex: 1; }
+    .arch-arrow {
+      align-self: center; color: var(--accent); font-size: 1.1em; font-weight: 700;
+    }
+    .arch-stack { flex: 1; display: flex; flex-direction: column; gap: 0.7em; }
+
+    /* CTA (slide 11) */
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.6em;
+      background: var(--accent); color: #0B1120;
+      font-weight: 800; font-size: 1em; letter-spacing: 0.02em;
+      border-radius: 12px; padding: 0.8em 1.9em; margin-top: 1.5em;
+    }
+    .cta-btn i, .cta-btn svg { width: 20px; height: 20px; color: #0B1120; }
+
+    .deck-footer {
+      margin-top: 2.2em; font-size: 0.72em; color: var(--text-muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    /* Small heading variant for dense slides */
+    .h2-sm { font-size: 1.5em !important; margin-bottom: 0.4em !important; }
+    .lead { font-size: 1.05em; color: var(--text-secondary); line-height: 1.5; }
+    .kicker {
+      font-size: 0.7em; font-weight: 700; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 0.3em;
+    }
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <!-- 1 · TITLE -->
+      <section class="title-slide">
+        <div class="hud"><span class="dot"></span> lablab.ai · hackathon submission</div>
+        <h1 style="font-size:3.6em; margin:0;">Shift <span style="color:var(--accent);">Pilot</span></h1>
+        <p style="font-size:1.15em; color:var(--text-secondary); margin-top:0.8em; line-height:1.5;">
+          Voice-first shift handovers for industrial plants —<br>
+          <span class="highlight">nothing gets lost between shifts.</span>
+        </p>
+        <div class="badge-row">
+          <span class="chip"><i data-lucide="zap"></i> Built end-to-end with Natively</span>
+          <span class="chip"><i data-lucide="mic"></i> Voice-first</span>
+          <span class="chip"><i data-lucide="play-circle"></i> 3-minute demo</span>
+        </div>
+      </section>
+
+      <!-- 2 · THE PROBLEM -->
+      <section>
+        <h2 class="h2-sm">The problem: handovers run on paper &amp; voice notes</h2>
+        <div class="two-col" style="gap:1.8em;">
+          <div>
+            <p class="lead" style="margin-bottom:0.8em;">
+              In Colombia and across Latin America, industrial shift handovers
+              still run on <span class="highlight">paper notes and WhatsApp voice messages.</span>
+            </p>
+            <p class="lead" style="font-size:0.95em;">
+              Most facilities have no digital system to capture what happened
+              during a shift — unlike plants in the US or Europe.
+            </p>
+          </div>
+          <div>
+            <div class="cost-card danger"><i data-lucide="bell-ring"></i> An open alarm nobody logged.</div>
+            <div class="cost-card warn"><i data-lucide="droplet"></i> A leaking valve nobody flagged.</div>
+            <div class="cost-card mute"><i data-lucide="message-circle"></i> A “keep an eye on this” that never survived the conversation.</div>
+          </div>
+        </div>
+        <div class="callout">Supervisors find out <span class="danger">days late</span>.</div>
+      </section>
+
+      <!-- 3 · TARGET USERS -->
+      <section>
+        <div class="kicker">Two users · one flow</div>
+        <h2 class="h2-sm" style="margin-top:0;">Who uses it</h2>
+        <div class="two-col" style="gap:1.6em;">
+          <div class="card" style="background:var(--bg-elevated);">
+            <i data-lucide="hard-hat"></i>
+            <h3>Plant operator</h3>
+            <p style="color:var(--text-secondary);">
+              Documents a shift in <strong style="color:var(--text-primary);">minutes — not forms</strong> —
+              while wearing gloves on a shared floor tablet.
+            </p>
+            <div style="margin-top:0.8em;"><span class="chip"><i data-lucide="mic"></i> Talks instead of types</span></div>
+          </div>
+          <div class="card" style="background:var(--bg-elevated);">
+            <i data-lucide="layout-dashboard"></i>
+            <h3>Supervisor</h3>
+            <p style="color:var(--text-secondary);">
+              One <strong style="color:var(--text-primary);">de-duplicated view</strong> of what's open,
+              what's been open too long, and who confirmed what.
+            </p>
+            <div style="margin-top:0.8em;"><span class="chip"><i data-lucide="gauge"></i> Signal, not noise</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 · THE SOLUTION IN ONE LINE -->
+      <section class="center-slide">
+        <div class="kicker">The solution in one line</div>
+        <h2 style="font-size:2.3em; line-height:1.25;">
+          The operator talks for <span class="highlight">2–5 minutes.</span><br>
+          The system does <span style="color:var(--accent);">the rest.</span>
+        </h2>
+        <div class="sol-grid">
+          <div class="sol-item fragment fade-up"><i data-lucide="audio-lines"></i><span>Transcription</span></div>
+          <div class="sol-item fragment fade-up"><i data-lucide="list-checks"></i><span>Structured events</span></div>
+          <div class="sol-item fragment fade-up"><i data-lucide="help-circle"></i><span>Follow-up questions</span></div>
+          <div class="sol-item fragment fade-up"><i data-lucide="lock"></i><span>Blocking handoff</span></div>
+        </div>
+      </section>
+
+      <!-- 5 · HOW IT WORKS -->
+      <section>
+        <div class="kicker">The flow</div>
+        <h2 class="h2-sm" style="margin-top:0;">How it works</h2>
+        <div class="flow">
+          <div class="step"><div class="step-ico"><i data-lucide="mic"></i></div><span>Record voice</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="audio-lines"></i></div><span>Transcribe</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="pen-line"></i></div><span>Operator corrects</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="list-checks"></i></div><span>Extract events</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="git-branch"></i></div><span>Disambiguation</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="shield-check"></i></div><span>Confirm</span></div>
+          <div class="step"><div class="step-ico"><i data-lucide="users"></i></div><span>Inherited by next shift</span></div>
+        </div>
+        <p class="flow-note">A 2–5 minute brief becomes a <span class="highlight">structured, confirmed handover</span>.</p>
+      </section>
+
+      <!-- 6 · THE HARD PART: GROUNDED DISAMBIGUATION -->
+      <section>
+        <div class="kicker">The hard part</div>
+        <h2 class="h2-sm" style="margin-top:0;">Grounded disambiguation</h2>
+        <p class="lead" style="font-size:0.92em; margin-bottom:0.7em;">
+          Operator says <span class="mono" style="color:var(--accent);">“the line 3 pump”</span> —
+          two real assets match: <span class="mono">P-301A</span> and <span class="mono">P-301B</span>, both centrifugal
+          transfer pumps on line 3, both critical.
+        </p>
+        <div class="two-col" style="gap:1.4em;">
+          <div class="mock-ui">
+            <div class="mock-head">Confirm asset <span class="mock-tag">CATALOG ONLY</span></div>
+            <div class="mock-body">
+              <div class="mock-quote">“the line 3 pump”</div>
+              <div class="mock-sub">2 catalog matches</div>
+              <div class="opt-row">
+                <span class="dot"></span>
+                <span class="opt-tag">P-301A</span>
+                <span class="opt-name">Bomba centrífuga · Línea 3 · Transferencia</span>
+                <span class="crit-badge">CRITICAL</span>
+              </div>
+              <div class="opt-row">
+                <span class="dot"></span>
+                <span class="opt-tag">P-301B</span>
+                <span class="opt-name">Bomba centrífuga · Línea 3 · Transferencia</span>
+                <span class="crit-badge">CRITICAL</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="icon-feature fragment fade-up">
+              <i data-lucide="ban"></i>
+              <div><strong>The agent does NOT guess.</strong> It stops and asks.</div>
+            </div>
+            <div class="icon-feature fragment fade-up">
+              <i data-lucide="database"></i>
+              <div><strong>Catalog is the only answer set.</strong> The plant's real asset catalog — nothing invented.</div>
+            </div>
+            <div class="icon-feature fragment fade-up">
+              <i data-lucide="tags"></i>
+              <div><strong>Aliases &amp; parent assets.</strong> Colloquial names resolve as reliably as formal tags.</div>
+            </div>
+          </div>
+        </div>
+        <div class="takeaway">No wrong data pretending to be right.</div>
+      </section>
+
+      <!-- 7 · NOTHING GETS LOST BETWEEN SHIFTS -->
+      <section>
+        <div class="kicker">Reliability by design</div>
+        <h2 class="h2-sm" style="margin-top:0;">Nothing gets lost between shifts</h2>
+        <div class="two-col" style="gap:1.8em;">
+          <div>
+            <div class="shift-track">
+              <span class="shift-chip">Shift 1</span>
+              <span class="shift-arrow">→</span>
+              <span class="shift-chip">Shift 2</span>
+              <span class="shift-arrow">→</span>
+              <span class="shift-chip active">Shift 3 · now</span>
+            </div>
+            <div class="trail-bar">EV-1042 · abierto — carried by reference</div>
+            <p class="trail-cap">
+              One event row. Never duplicated. The shift trail records
+              <span class="highlight">how many shifts it has been open</span>.
+            </p>
+          </div>
+          <div class="card handoff-card">
+            <i data-lucide="lock"></i>
+            <h3>Blocked until confirmed</h3>
+            <p style="color:var(--text-secondary);">
+              The incoming operator <strong style="color:var(--text-primary);">cannot start their shift</strong>
+              until they read the previous handover and confirm receipt.
+            </p>
+            <div class="mock-btns">
+              <span class="btn-mock ok"><i data-lucide="check"></i> Confirm receipt</span>
+              <span class="btn-mock disabled"><i data-lucide="lock"></i> Start shift</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8 · SUPERVISOR DASHBOARD -->
+      <section>
+        <div class="kicker">Supervisor view</div>
+        <h2 class="h2-sm" style="margin-top:0;">The dashboard</h2>
+        <div class="three-col">
+          <div class="card">
+            <i data-lucide="triangle-alert"></i>
+            <h3>Ranked alerts</h3>
+            <p style="color:var(--text-secondary);">Events ranked by how many shifts they've stayed open. 3 shifts: amber. 5+: red.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="history"></i>
+            <h3>Full shift history</h3>
+            <p style="color:var(--text-secondary);">Every shift, every event — traceable back to the operator who logged it.</p>
+          </div>
+          <div class="card">
+            <i data-lucide="hash"></i>
+            <h3>Counted exactly once</h3>
+            <p style="color:var(--text-secondary);">An event traveling across shifts is still one event. No double counting.</p>
+          </div>
+        </div>
+        <div style="text-align:center;">
+          <span class="pdf-chip"><i data-lucide="file-down"></i> PDF export — one-click printable handover</span>
+        </div>
+      </section>
+
+      <!-- 9 · WHAT'S BUILT -->
+      <section>
+        <div class="kicker">Not a mockup</div>
+        <h2 class="h2-sm" style="margin-top:0;">A working pipeline</h2>
+        <div class="two-col" style="gap:2em;">
+          <div>
+            <div class="icon-feature">
+              <i data-lucide="radio"></i>
+              <div><strong>Streaming transcription</strong> — Speechmatics real-time STT</div>
+            </div>
+            <div class="icon-feature">
+              <i data-lucide="bot"></i>
+              <div><strong>Structured extraction</strong> — an LLM turns speech into events</div>
+            </div>
+          </div>
+          <div>
+            <div class="icon-feature">
+              <i data-lucide="database"></i>
+              <div><strong>Real persistence</strong> — Supabase Postgres with row-level security</div>
+            </div>
+            <div class="icon-feature">
+              <i data-lucide="layers"></i>
+              <div><strong>Shift inheritance</strong> — open events carried forward by reference</div>
+            </div>
+          </div>
+        </div>
+        <p class="flow-note" style="font-size:1em;">
+          The demo video runs <span class="highlight">this exact pipeline — live, not mocked.</span>
+        </p>
+      </section>
+
+      <!-- 10 · ARCHITECTURE -->
+      <section>
+        <div class="kicker">How it's built</div>
+        <h2 class="h2-sm" style="margin-top:0;">Architecture</h2>
+        <div class="arch-row">
+          <div class="arch-box">
+            <strong>Operator app</strong>
+            <span>React + Vite<br>voice-first UI</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-box highlight">
+            <strong>Supabase Edge Functions</strong>
+            <span>transcribe · extract-events · auth</span>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-stack">
+            <div class="arch-box"><strong>Speechmatics</strong><span>real-time STT</span></div>
+            <div class="arch-box"><strong>LLM · Featherless</strong><span>grounded extraction</span></div>
+          </div>
+        </div>
+        <div class="arch-row sub">
+          <div class="arch-box wide" style="border-color:var(--border);">
+            <strong style="color:var(--accent);">Postgres</strong>
+            <span>assets catalog · events · shift trail · RLS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11 · CLOSE -->
+      <section class="title-slide">
+        <h1 style="font-size:2.8em; margin:0;">See Shift Pilot <span style="color:var(--accent);">in action.</span></h1>
+        <p style="font-size:1.1em; color:var(--text-secondary); margin-top:0.8em;">
+          Watch the 3-minute demo — the pipeline runs live, end to end.
+        </p>
+        <div class="cta-btn"><i data-lucide="play"></i> Watch the demo</div>
+        <div class="deck-footer">Built end-to-end with Natively · lablab.ai hackathon</div>
+      </section>
+
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    Reveal.initialize({
+      width: 960,
+      height: 540,
+      margin: 0.04,
+      minScale: 0.2,
+      maxScale: 3.0,
+      hash: true,
+      transition: 'fade',
+      transitionSpeed: 'default',
+      autoAnimateEasing: 'ease-out',
+      autoAnimateDuration: 0.8,
+      controls: true,
+      progress: true,
+      center: true,
+    });
+    lucide.createIcons();
+  </script>
+</body>
+</html>
