@@ -123,6 +123,7 @@ async function callFeatherless(
   }
   if (useJsonMode) payload.response_format = { type: "json_object" }
 
+  const started = Date.now()
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), 60000)
   let response: Response
@@ -155,8 +156,7 @@ async function callFeatherless(
   const choice = data.choices?.[0]
   const finishReason: string = choice?.finish_reason ?? "unknown"
   const content: string = choice?.message?.content ?? ""
-  console.log("Featherless finish_reason:", finishReason, "content length:", content.length)
-  if (!content) throw new InvalidModelOutputError("(empty content)", finishReason)
+ console.log("Featherless finish_reason:", finishReason, "content length:", content.length, "elapsed_ms:", Date.now() - started)  if (!content) throw new InvalidModelOutputError("(empty content)", finishReason)
   return { content, finishReason }
 }
 
